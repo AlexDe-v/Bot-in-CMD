@@ -290,8 +290,13 @@ async def open_dm(cmd: str):
             print(dashes)
         elif x == 'exit' or x == 'close' or x == 'exi':
             return
+        elif x == '':
+            pass
         else:
-            await dm.send(x)
+            try:
+                await dm.send(x)
+            except Exception:
+                print('Could not send message!')
             print('Success!')
             print(dashes)
 
