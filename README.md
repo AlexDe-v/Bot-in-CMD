@@ -1,5 +1,8 @@
 # Bot-in-CMD
 A python script allowing to fully control a discord bot in a terminal window.
+
+![](https://raw.githubusercontent.com/AlexDe-v/Bot-in-CMD/master/Showcase.mp4)
+
 ### Current features:
 - Going linux-like in channels and servers
 - Sending messages as a bot
