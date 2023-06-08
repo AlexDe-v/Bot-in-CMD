@@ -285,7 +285,7 @@ async def open_dm(cmd: str):
         x = input('Enter text to send or type "r" to refresh the channel \nTo close the DM enter "exit" \n')
         if x == 'r':
             history = await dm.history(limit=50).flatten()
-            for msg in history:
+            for msg in reversed(history):
                 print(f'<{msg.author}> {msg.content}')
             print(dashes)
         elif x == 'exit' or x == 'close' or x == 'exi':
