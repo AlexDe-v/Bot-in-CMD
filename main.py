@@ -33,7 +33,7 @@ print('Welcome!')
 if data['tokens'] == []:
     print("Paste in your token, you don't have any saved.")
 else:
-    print('Choose a bot from the config or paste a new one.')
+    print('Choose a bot from the config or paste a new token here.')
 
 
 
