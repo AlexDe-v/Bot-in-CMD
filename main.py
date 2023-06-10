@@ -2,9 +2,48 @@ import discord
 import json
 import time
 
-client = discord.Client(intetnts=discord.Intents.all())
+client = discord.Client(intents=discord.Intents.all())
 
 
+
+
+"""
+PLEASE READ
+Hello, here's the source code for this app.
+Everything starts in the on_ready function
+Then the other functions are triggered managed by the 'operations' variable
+
+If you want to add your own commands. Here is a little guide
+
+The 'server_path' and 'channel_path' are ID's for the guild and channel the user is in.
+If the user isn't in a channel or guild the variable will be 0
+
+Below is a example command
+"""
+
+async def example(cmd: str): # cmd is required, kinda like ctx in the commands
+    if cmd == 'example':
+        print("You have set any argument in this command!")
+        print("Example [args]")
+        return
+    if not server_path: # Checks if server path is 0, gives feedback is so.
+        print('You have to be in a guild to use this command!')
+        return
+    cmd = cmd.removeprefix('example ') # Splits the command and the arguments
+    print(f'You entered as args: {cmd}')
+    print(f'You are in server: {client.get_guild(server_path).name}')
+
+# Dont forget to add your function below in the dict "operations"
+
+
+
+
+
+
+
+
+
+# Colors for printing
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -91,8 +130,6 @@ async def on_ready():
             else:
                 print(f"{command} is not a valid command!")
                 print('Use "help" to view all commands.')
-
-
 
 
 async def ls(cmd):
@@ -253,7 +290,7 @@ async def members(cmd):
     if not server_path:
         print('You have to be in a server directory to use this command!')
         return
-    for member in client.get_guild(server_path).members:
+    for member in await client.get_guild(server_path).fetch_members(limit=None).flatten():
         lvl = 'User'
         if member.guild_permissions.administrator:
             lvl = 'Admin'
@@ -262,7 +299,6 @@ async def members(cmd):
         elif member.guild.owner.id == member.id:
             lvl = 'Owner'
         print(f'{member}({member.id}) : {lvl}')
-
 
 async def open_dm(cmd: str):
     try:
@@ -308,8 +344,22 @@ async def list_dms(cmd):
     print('To open the DM chat with somebody use "open_dm [user_id]"')
     print('Also note that this list is empty after this program restarts!')
 
-
-
+async def list_invites(cmd):
+    print(dashes)
+    if not server_path:
+        print('This can only be used from a guild directory!')
+        return
+    guild = client.get_guild(server_path)
+    if not guild.get_member(client.user.id).guild_permissions.manage_guild:
+        print('Bot needs the "manage_guild" permission. \nYou can create an invite with the "invite" commnd.')
+        return
+    invites = await guild.invites()
+    if len(invites) == 0:
+        print('Guild does not have any invites!')
+    for invite in invites:
+        print(f'{invite.url} by {invite.inviter}({invite.inviter.id})')
+    print(f'------- Listed {len(invites)} invites for {guild.name} -------')
+    
 async def help(cmd):
     print("All avaible commands:")
     print("ls - Lists all servers or channels in a server")
@@ -318,9 +368,11 @@ async def help(cmd):
     print("leave [server_id] - Leaves a server")
     print("send [message] - Sends something in a channel or DM")
     print("invite - Creates an invite while in a channel directory")
+    print("invites - Lists all invites in a guild directory")
     print("members - Lists all members from a guild directory")
     print("open_dm [user_id] - Opens DM chat with a user by his ID")
     print("list_dms - Lists out all DM chats with users")
+    print("example - This is an example command, read source code for more!")
     print("exit - Logs out of the bot and closes this program")
 
 
@@ -337,6 +389,8 @@ operations = {
     "members": members,
     "open_dm": open_dm,
     "list_dms": list_dms,
+    "invites": list_invites,
+    "example": example,
 }
 try:
     client.run(token)
